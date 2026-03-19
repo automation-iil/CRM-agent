@@ -7,257 +7,87 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
-  /* ─── TOKENS ─────────────────────────────────────── */
   :root {
-    --bg:       #0a0d0f;
-    --surface:  #111518;
-    --card:     #161b1f;
-    --border:   #1f2830;
-    --border2:  #263038;
-    --green:    #25d366;
-    --green-dk: #1aab52;
-    --amber:    #f5a623;
-    --red:      #e05252;
-    --blue:     #4a9eff;
-    --text:     #e8edf2;
-    --muted:    #6b7f8c;
-    --font:     'Syne', sans-serif;
-    --mono:     'DM Mono', monospace;
-    --radius:   10px;
-    --glow:     0 0 24px rgba(37,211,102,.18);
+    --bg:#0a0d0f;--surface:#111518;--card:#161b1f;--border:#1f2830;--border2:#263038;
+    --green:#25d366;--amber:#f5a623;--red:#e05252;--blue:#4a9eff;
+    --text:#e8edf2;--muted:#6b7f8c;
+    --font:'Syne',sans-serif;--mono:'DM Mono',monospace;
+    --radius:10px;--glow:0 0 24px rgba(37,211,102,.18);
   }
-
-  /* ─── RESET ──────────────────────────────────────── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 15px; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font);
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* ─── GRID NOISE TEXTURE ─────────────────────────── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    background-image:
-      linear-gradient(rgba(37,211,102,.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(37,211,102,.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
-
-  /* ─── LAYOUT ─────────────────────────────────────── */
-  .shell { max-width: 1100px; margin: 0 auto; padding: 0 20px 60px; position: relative; z-index: 1; }
-
-  /* ─── TOP BAR ────────────────────────────────────── */
-  header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 28px 0 32px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 36px;
-  }
-  .logo {
-    display: flex; align-items: center; gap: 12px;
-  }
-  .logo-icon {
-    width: 38px; height: 38px; border-radius: 10px;
-    background: var(--green);
-    display: grid; place-items: center;
-    font-size: 18px;
-    box-shadow: var(--glow);
-  }
-  .logo-text {
-    font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em;
-    line-height: 1;
-  }
-  .logo-text span { color: var(--green); }
-  .badge-live {
-    display: flex; align-items: center; gap: 6px;
-    font-family: var(--mono); font-size: .7rem; color: var(--green);
-    background: rgba(37,211,102,.1); border: 1px solid rgba(37,211,102,.25);
-    padding: 4px 10px; border-radius: 20px; letter-spacing: .05em;
-  }
-  .badge-live::before {
-    content: ''; width: 6px; height: 6px; border-radius: 50%;
-    background: var(--green);
-    animation: blink 1.4s infinite;
-  }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-  /* ─── STATS ROW ──────────────────────────────────── */
-  .stats {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
-    margin-bottom: 36px;
-  }
-  .stat-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 18px 20px;
-    position: relative; overflow: hidden;
-    transition: border-color .2s;
-  }
-  .stat-card:hover { border-color: var(--border2); }
-  .stat-card::after {
-    content: attr(data-icon);
-    position: absolute; right: 14px; top: 14px;
-    font-size: 1.3rem; opacity: .25;
-  }
-  .stat-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 6px; }
-  .stat-num   { font-size: 2rem; font-weight: 800; line-height: 1; }
-  .stat-num.green  { color: var(--green); }
-  .stat-num.amber  { color: var(--amber); }
-  .stat-num.red    { color: var(--red); }
-
-  /* ─── MAIN COLUMNS ───────────────────────────────── */
-  .columns { display: grid; grid-template-columns: 360px 1fr; gap: 24px; }
-
-  /* ─── PANEL ──────────────────────────────────────── */
-  .panel {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); overflow: hidden;
-  }
-  .panel-head {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .panel-body { padding: 20px; }
-
-  /* ─── FORM ───────────────────────────────────────── */
-  .form-row { margin-bottom: 14px; }
-  label { display: block; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
-  input, select, textarea {
-    width: 100%; background: var(--surface); border: 1px solid var(--border);
-    color: var(--text); font-family: var(--font); font-size: .9rem;
-    padding: 10px 13px; border-radius: 7px; outline: none;
-    transition: border-color .2s, box-shadow .2s;
-  }
-  input:focus, select:focus, textarea:focus {
-    border-color: rgba(37,211,102,.5);
-    box-shadow: 0 0 0 3px rgba(37,211,102,.08);
-  }
-  textarea { resize: vertical; min-height: 72px; }
-  select option { background: #1a2228; }
-
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  .btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: 100%; padding: 12px; border-radius: 8px; border: none; cursor: pointer;
-    font-family: var(--font); font-size: .9rem; font-weight: 700; letter-spacing: .02em;
-    transition: all .18s;
-  }
-  .btn-primary {
-    background: var(--green); color: #000;
-    box-shadow: 0 4px 18px rgba(37,211,102,.3);
-  }
-  .btn-primary:hover { background: #29e870; box-shadow: 0 6px 24px rgba(37,211,102,.4); transform: translateY(-1px); }
-  .btn-primary:active { transform: translateY(0); }
-
-  /* ─── URL CONFIG ─────────────────────────────────── */
-  .url-row {
-    display: flex; gap: 10px; align-items: center; margin-bottom: 24px;
-  }
-  .url-row input { flex: 1; font-family: var(--mono); font-size: .78rem; }
-  .btn-sm {
-    padding: 10px 18px; border-radius: 7px; border: 1px solid var(--border2);
-    background: var(--surface); color: var(--text); font-family: var(--font);
-    font-size: .8rem; font-weight: 600; cursor: pointer;
-    transition: all .15s; white-space: nowrap;
-  }
-  .btn-sm:hover { background: var(--card); border-color: var(--green); color: var(--green); }
-
-  /* ─── TABLE ──────────────────────────────────────── */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: .83rem; }
-  thead th {
-    text-align: left; padding: 10px 14px;
-    font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted);
-    border-bottom: 1px solid var(--border);
-  }
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background .15s;
-  }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: rgba(255,255,255,.02); }
-  td { padding: 12px 14px; vertical-align: middle; }
-
-  /* status badges */
-  .badge {
-    display: inline-block; padding: 3px 10px; border-radius: 20px;
-    font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-    font-family: var(--mono);
-  }
-  .badge.pending { background: rgba(245,166,35,.12); color: var(--amber); border: 1px solid rgba(245,166,35,.3); }
-  .badge.done    { background: rgba(37,211,102,.1);  color: var(--green); border: 1px solid rgba(37,211,102,.3); }
-  .badge.stop    { background: rgba(224,82,82,.1);   color: var(--red);   border: 1px solid rgba(224,82,82,.3); }
-
-  /* type pill */
-  .type-pill {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 2px 9px; border-radius: 6px; font-size: .68rem; font-family: var(--mono);
-    background: rgba(74,158,255,.1); color: var(--blue); border: 1px solid rgba(74,158,255,.2);
-  }
-
-  /* actions */
-  .actions { display: flex; gap: 6px; }
-  .act {
-    padding: 5px 11px; border-radius: 6px; border: 1px solid var(--border);
-    background: var(--surface); color: var(--muted);
-    font-size: .72rem; font-family: var(--mono); font-weight: 500;
-    cursor: pointer; transition: all .15s;
-  }
-  .act:hover.done  { border-color: var(--green); color: var(--green); background: rgba(37,211,102,.06); }
-  .act:hover.stop  { border-color: var(--amber); color: var(--amber); background: rgba(245,166,35,.06); }
-  .act:hover.del   { border-color: var(--red);   color: var(--red);   background: rgba(224,82,82,.06); }
-
-  /* ─── EMPTY / LOADING ────────────────────────────── */
-  .empty {
-    text-align: center; padding: 48px 20px; color: var(--muted);
-  }
-  .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .4; }
-  .empty p { font-size: .85rem; }
-  .spinner {
-    width: 22px; height: 22px; border: 2px solid rgba(37,211,102,.2);
-    border-top-color: var(--green); border-radius: 50%;
-    animation: spin .7s linear infinite; margin: 0 auto;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ─── TOAST ──────────────────────────────────────── */
-  #toast {
-    position: fixed; bottom: 30px; right: 30px; z-index: 999;
-    background: var(--card); border: 1px solid var(--border2);
-    padding: 13px 20px; border-radius: 10px;
-    font-size: .85rem; font-weight: 600;
-    box-shadow: 0 8px 32px rgba(0,0,0,.5);
-    transform: translateY(80px); opacity: 0;
-    transition: all .3s cubic-bezier(.34,1.56,.64,1);
-    display: flex; align-items: center; gap: 10px;
-  }
-  #toast.show { transform: translateY(0); opacity: 1; }
-  #toast.ok   { border-color: rgba(37,211,102,.4); color: var(--green); }
-  #toast.err  { border-color: rgba(224,82,82,.4);  color: var(--red); }
-
-  /* ─── RESPONSIVE ─────────────────────────────────── */
-  @media (max-width: 820px) {
-    .columns { grid-template-columns: 1fr; }
-    .stats   { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 480px) {
-    .stats { grid-template-columns: 1fr 1fr; }
-    .form-grid { grid-template-columns: 1fr; }
-  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:15px}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;-webkit-font-smoothing:antialiased}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:linear-gradient(rgba(37,211,102,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(37,211,102,.03) 1px,transparent 1px);
+    background-size:40px 40px}
+  .shell{max-width:1100px;margin:0 auto;padding:0 20px 60px;position:relative;z-index:1}
+  header{display:flex;align-items:center;justify-content:space-between;padding:28px 0 32px;border-bottom:1px solid var(--border);margin-bottom:36px}
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo-icon{width:38px;height:38px;border-radius:10px;background:var(--green);display:grid;place-items:center;font-size:18px;box-shadow:var(--glow)}
+  .logo-text{font-size:1.15rem;font-weight:800;letter-spacing:-.02em;line-height:1}
+  .logo-text span{color:var(--green)}
+  .badge-live{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.7rem;color:var(--green);background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.25);padding:4px 10px;border-radius:20px;letter-spacing:.05em}
+  .badge-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.4s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px}
+  .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;position:relative;overflow:hidden;transition:border-color .2s}
+  .stat-card:hover{border-color:var(--border2)}
+  .stat-card::after{content:attr(data-icon);position:absolute;right:14px;top:14px;font-size:1.3rem;opacity:.25}
+  .stat-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px}
+  .stat-num{font-size:2rem;font-weight:800;line-height:1}
+  .stat-num.green{color:var(--green)}.stat-num.amber{color:var(--amber)}.stat-num.red{color:var(--red)}
+  .columns{display:grid;grid-template-columns:360px 1fr;gap:24px}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+  .panel-head{padding:16px 20px;border-bottom:1px solid var(--border);font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;justify-content:space-between}
+  .panel-body{padding:20px}
+  .form-row{margin-bottom:14px}
+  label{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+  input,select,textarea{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:.9rem;padding:10px 13px;border-radius:7px;outline:none;transition:border-color .2s,box-shadow .2s}
+  input:focus,select:focus,textarea:focus{border-color:rgba(37,211,102,.5);box-shadow:0 0 0 3px rgba(37,211,102,.08)}
+  textarea{resize:vertical;min-height:72px}
+  select option{background:#1a2228}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border-radius:8px;border:none;cursor:pointer;font-family:var(--font);font-size:.9rem;font-weight:700;letter-spacing:.02em;transition:all .18s}
+  .btn-primary{background:var(--green);color:#000;box-shadow:0 4px 18px rgba(37,211,102,.3)}
+  .btn-primary:hover{background:#29e870;box-shadow:0 6px 24px rgba(37,211,102,.4);transform:translateY(-1px)}
+  .btn-primary:active{transform:translateY(0)}
+  .url-row{display:flex;gap:10px;align-items:center;margin-bottom:24px}
+  .url-row input{flex:1;font-family:var(--mono);font-size:.78rem}
+  .btn-sm{padding:10px 18px;border-radius:7px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+  .btn-sm:hover{background:var(--card);border-color:var(--green);color:var(--green)}
+  .table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:.83rem}
+  thead th{text-align:left;padding:10px 14px;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);border-bottom:1px solid var(--border)}
+  tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+  tbody tr:last-child{border-bottom:none}
+  tbody tr:hover{background:rgba(255,255,255,.02)}
+  td{padding:12px 14px;vertical-align:middle}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-family:var(--mono)}
+  .badge.pending{background:rgba(245,166,35,.12);color:var(--amber);border:1px solid rgba(245,166,35,.3)}
+  .badge.done{background:rgba(37,211,102,.1);color:var(--green);border:1px solid rgba(37,211,102,.3)}
+  .badge.stop{background:rgba(224,82,82,.1);color:var(--red);border:1px solid rgba(224,82,82,.3)}
+  .type-pill{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:6px;font-size:.68rem;font-family:var(--mono);background:rgba(74,158,255,.1);color:var(--blue);border:1px solid rgba(74,158,255,.2)}
+  .actions{display:flex;gap:6px}
+  .act{padding:5px 11px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:.72rem;font-family:var(--mono);font-weight:500;cursor:pointer;transition:all .15s}
+  .act.done:hover{border-color:var(--green);color:var(--green);background:rgba(37,211,102,.06)}
+  .act.stop:hover{border-color:var(--amber);color:var(--amber);background:rgba(245,166,35,.06)}
+  .act.del:hover{border-color:var(--red);color:var(--red);background:rgba(224,82,82,.06)}
+  .empty{text-align:center;padding:48px 20px;color:var(--muted)}
+  .empty-icon{font-size:2.5rem;margin-bottom:12px;opacity:.4}
+  .empty p{font-size:.85rem}
+  .spinner{width:22px;height:22px;border:2px solid rgba(37,211,102,.2);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #toast{position:fixed;bottom:30px;right:30px;z-index:999;background:var(--card);border:1px solid var(--border2);padding:13px 20px;border-radius:10px;font-size:.85rem;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.5);transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:10px}
+  #toast.show{transform:translateY(0);opacity:1}
+  #toast.ok{border-color:rgba(37,211,102,.4);color:var(--green)}
+  #toast.err{border-color:rgba(224,82,82,.4);color:var(--red)}
+  @media(max-width:820px){.columns{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:480px){.stats{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
 <div class="shell">
 
-  <!-- ── HEADER ── -->
   <header>
     <div class="logo">
       <div class="logo-icon">💬</div>
@@ -266,67 +96,30 @@
     <div class="badge-live">SYSTEM LIVE</div>
   </header>
 
-  <!-- ── API URL CONFIG ── -->
-  <div style="margin-bottom:28px;">
-    <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;">Apps Script Web App URL</div>
+  <div style="margin-bottom:28px">
+    <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px">Apps Script Web App URL</div>
     <div class="url-row">
       <input type="text" id="apiUrl" placeholder="https://script.google.com/macros/s/YOUR_ID/exec" />
       <button class="btn-sm" onclick="saveUrl()">Save & Load</button>
     </div>
   </div>
 
-  <!-- ── STATS ── -->
   <div class="stats">
-    <div class="stat-card" data-icon="👥">
-      <div class="stat-label">Total Leads</div>
-      <div class="stat-num" id="s-total">—</div>
-    </div>
-    <div class="stat-card" data-icon="🔄">
-      <div class="stat-label">Pending</div>
-      <div class="stat-num amber" id="s-pending">—</div>
-    </div>
-    <div class="stat-card" data-icon="✅">
-      <div class="stat-label">Done</div>
-      <div class="stat-num green" id="s-done">—</div>
-    </div>
-    <div class="stat-card" data-icon="🛑">
-      <div class="stat-label">Stopped</div>
-      <div class="stat-num red" id="s-stop">—</div>
-    </div>
+    <div class="stat-card" data-icon="👥"><div class="stat-label">Total Leads</div><div class="stat-num" id="s-total">—</div></div>
+    <div class="stat-card" data-icon="🔄"><div class="stat-label">Pending</div><div class="stat-num amber" id="s-pending">—</div></div>
+    <div class="stat-card" data-icon="✅"><div class="stat-label">Done</div><div class="stat-num green" id="s-done">—</div></div>
+    <div class="stat-card" data-icon="🛑"><div class="stat-label">Stopped</div><div class="stat-num red" id="s-stop">—</div></div>
   </div>
 
-  <!-- ── COLUMNS ── -->
   <div class="columns">
-
-    <!-- ADD LEAD FORM -->
     <div class="panel">
-      <div class="panel-head">
-        <span>Add New Lead</span>
-        <span style="color:var(--green)">＋</span>
-      </div>
+      <div class="panel-head"><span>Add New Lead</span><span style="color:var(--green)">＋</span></div>
       <div class="panel-body">
-
-        <div class="form-row">
-          <label>Name *</label>
-          <input id="f-name" type="text" placeholder="John Doe" />
-        </div>
-
-        <div class="form-row">
-          <label>WhatsApp Number *</label>
-          <input id="f-phone" type="tel" placeholder="919876543210 (with country code)" />
-        </div>
-
-        <div class="form-row">
-          <label>Email</label>
-          <input id="f-email" type="email" placeholder="john@example.com" />
-        </div>
-
-        <div class="form-row">
-          <label>First Message</label>
-          <textarea id="f-message" placeholder="Hi, thanks for your interest!"></textarea>
-        </div>
-
-        <div class="form-grid" style="margin-bottom:16px;">
+        <div class="form-row"><label>Name *</label><input id="f-name" type="text" placeholder="John Doe" /></div>
+        <div class="form-row"><label>WhatsApp Number *</label><input id="f-phone" type="tel" placeholder="919876543210 (with country code)" /></div>
+        <div class="form-row"><label>Email</label><input id="f-email" type="email" placeholder="john@example.com" /></div>
+        <div class="form-row"><label>First Message</label><textarea id="f-message" placeholder="Hi, thanks for your interest!"></textarea></div>
+        <div class="form-grid" style="margin-bottom:16px">
           <div class="form-row" style="margin-bottom:0">
             <label>Followup Type</label>
             <select id="f-type" onchange="toggleValue()">
@@ -341,20 +134,16 @@
             <input id="f-value" value="1" placeholder="1" />
           </div>
         </div>
-
         <button class="btn btn-primary" onclick="addLead()" id="add-btn">
-          <span>Send & Add Lead</span>
-          <span>→</span>
+          <span>Send & Add Lead</span><span>→</span>
         </button>
-
       </div>
     </div>
 
-    <!-- LEADS TABLE -->
     <div class="panel">
       <div class="panel-head">
         <span>Leads</span>
-        <button class="btn-sm" onclick="loadLeads()" style="font-size:.7rem;padding:5px 12px;">↻ Refresh</button>
+        <button class="btn-sm" onclick="loadLeads()" style="font-size:.7rem;padding:5px 12px">↻ Refresh</button>
       </div>
       <div class="table-wrap" id="table-area">
         <div class="empty">
@@ -363,28 +152,20 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────
-let API = localStorage.getItem("waCrmUrl") || "";
+let API   = localStorage.getItem("waCrmUrl") || "";
 let leads = [];
 
-// ─── INIT ─────────────────────────────────────────────
 window.onload = () => {
-  if (API) {
-    document.getElementById("apiUrl").value = API;
-    loadLeads();
-  }
+  if (API) { document.getElementById("apiUrl").value = API; loadLeads(); }
   toggleValue();
 };
 
-// ─── SAVE URL ─────────────────────────────────────────
 function saveUrl() {
   API = document.getElementById("apiUrl").value.trim();
   if (!API) return toast("Enter a valid URL", "err");
@@ -392,47 +173,35 @@ function saveUrl() {
   loadLeads();
 }
 
-// ─── TOGGLE VALUE LABEL ────────────────────────────────
 function toggleValue() {
   const type  = document.getElementById("f-type").value;
   const label = document.getElementById("val-label");
   const input = document.getElementById("f-value");
-
-  const map = {
-    DAILY:  ["(not needed)", "1"],
-    WEEKLY: ["(not needed)", "1"],
-    CUSTOM: ["Every N Days", "3"],
-    DAY:    ["Day Name", "MONDAY"]
-  };
-  const [lbl, ph] = map[type] || ["Value", "1"];
+  const wrap  = document.getElementById("val-wrap");
+  const map   = { DAILY:["Not needed","1"], WEEKLY:["Not needed","1"], CUSTOM:["Every N Days","3"], DAY:["Day Name","MONDAY"] };
+  const [lbl, ph] = map[type] || ["Value","1"];
   label.textContent = lbl;
   input.placeholder = ph;
   if (type === "DAILY" || type === "WEEKLY") {
-    input.value = "1";
-    document.getElementById("val-wrap").style.opacity = ".4";
-    input.disabled = true;
+    input.value = "1"; input.disabled = true; wrap.style.opacity = ".4";
   } else {
-    input.disabled = false;
-    document.getElementById("val-wrap").style.opacity = "1";
+    input.disabled = false; wrap.style.opacity = "1";
   }
 }
 
-// ─── ADD LEAD ─────────────────────────────────────────
 async function addLead() {
   if (!API) return toast("Set your API URL first!", "err");
-
   const name  = document.getElementById("f-name").value.trim();
   const phone = document.getElementById("f-phone").value.trim();
-
-  if (!name || !phone) return toast("Name and phone are required", "err");
+  if (!name)  return toast("Name is required", "err");
+  if (!phone) return toast("Phone is required", "err");
 
   const btn = document.getElementById("add-btn");
   btn.innerHTML = '<div class="spinner"></div>';
-  btn.disabled = true;
+  btn.disabled  = true;
 
   const payload = {
-    name,
-    phone,
+    name, phone,
     email:   document.getElementById("f-email").value.trim(),
     message: document.getElementById("f-message").value.trim(),
     type:    document.getElementById("f-type").value,
@@ -440,124 +209,105 @@ async function addLead() {
   };
 
   try {
-    const res = await fetch(API, {
-      method: "POST",
-      body: JSON.stringify(payload)
+    // Content-Type: text/plain prevents CORS preflight block
+    const res  = await fetch(API, {
+      method:  "POST",
+      headers: { "Content-Type": "text/plain" },
+      body:    JSON.stringify(payload)
     });
-    const txt = await res.text();
-    if (txt.includes("OK")) {
+    const json = await res.json();
+    if (json.status === "OK") {
       toast("Lead added & WhatsApp sent ✅", "ok");
-      clearForm();
-      loadLeads();
+      clearForm(); loadLeads();
     } else {
-      toast("Error: " + txt, "err");
+      toast("Response: " + JSON.stringify(json), "err");
     }
-  } catch (e) {
-    toast("Network error: " + e.message, "err");
+  } catch (err) {
+    toast("Error: " + err.message, "err");
   }
 
   btn.innerHTML = "<span>Send & Add Lead</span><span>→</span>";
-  btn.disabled = false;
+  btn.disabled  = false;
 }
 
-// ─── LOAD LEADS ───────────────────────────────────────
 async function loadLeads() {
   if (!API) return;
-
   document.getElementById("table-area").innerHTML = `<div class="empty"><div class="spinner"></div></div>`;
-
   try {
-    const res  = await fetch(API + "?action=leads");
+    const res = await fetch(API + "?action=leads&cb=" + Date.now());
     leads = await res.json();
-    renderTable();
-    updateStats();
-  } catch (e) {
+    renderTable(); updateStats();
+  } catch (err) {
     document.getElementById("table-area").innerHTML =
-      `<div class="empty"><div class="empty-icon">⚠️</div><p>Could not load — check your URL</p></div>`;
+      `<div class="empty">
+        <div class="empty-icon">⚠️</div>
+        <p>Could not load — check your URL &amp; deployment</p>
+        <p style="margin-top:8px;font-size:.75rem;font-family:var(--mono);color:var(--red)">${err.message}</p>
+      </div>`;
   }
 }
 
-// ─── RENDER TABLE ─────────────────────────────────────
 function renderTable() {
   const area = document.getElementById("table-area");
-
   if (!leads.length) {
     area.innerHTML = `<div class="empty"><div class="empty-icon">🚀</div><p>No leads yet. Add your first lead!</p></div>`;
     return;
   }
-
-  const typeColor = {DAILY:"#4a9eff",WEEKLY:"#a78bfa",CUSTOM:"#f59e0b",DAY:"#34d399"};
-
+  const tc = { DAILY:"#4a9eff", WEEKLY:"#a78bfa", CUSTOM:"#f59e0b", DAY:"#34d399" };
   const rows = leads.map(l => {
-    const statusClass = {PENDING:"pending",DONE:"done",STOP:"stop"}[l.status] || "pending";
-    const tc = typeColor[l.type] || "#4a9eff";
-    return `
-      <tr>
-        <td><strong>${esc(l.name)}</strong><br><span style="color:var(--muted);font-size:.75rem;font-family:var(--mono)">${esc(l.phone)}</span></td>
-        <td><span class="badge ${statusClass}">${l.status}</span></td>
-        <td>
-          <span class="type-pill" style="color:${tc};border-color:${tc}22;background:${tc}12">
-            ${l.type}${(l.type==="CUSTOM"||l.type==="DAY") ? " · "+l.value : ""}
-          </span>
-        </td>
-        <td style="color:var(--muted);font-size:.78rem;font-family:var(--mono)">${l.lastSent}</td>
-        <td>
-          <div class="actions">
-            <button class="act done" onclick="action('done','${l.id}')">Done</button>
-            <button class="act stop" onclick="action('stop','${l.id}')">Stop</button>
-            <button class="act del"  onclick="action('delete','${l.id}')">Del</button>
-          </div>
-        </td>
-      </tr>`;
+    const sc  = { PENDING:"pending", DONE:"done", STOP:"stop" }[l.status] || "pending";
+    const c   = tc[l.type] || "#4a9eff";
+    const val = (l.type==="CUSTOM"||l.type==="DAY") ? " · "+l.value : "";
+    return `<tr>
+      <td><strong>${esc(l.name)}</strong><br>
+        <span style="color:var(--muted);font-size:.75rem;font-family:var(--mono)">${esc(l.phone)}</span></td>
+      <td><span class="badge ${sc}">${l.status}</span></td>
+      <td><span class="type-pill" style="color:${c};border-color:${c}22;background:${c}12">${l.type}${val}</span></td>
+      <td style="color:var(--muted);font-size:.78rem;font-family:var(--mono)">${l.lastSent}</td>
+      <td><div class="actions">
+        <button class="act done" onclick="doAction('done','${l.id}')">Done</button>
+        <button class="act stop" onclick="doAction('stop','${l.id}')">Stop</button>
+        <button class="act del"  onclick="doAction('delete','${l.id}')">Del</button>
+      </div></td>
+    </tr>`;
   }).join("");
 
-  area.innerHTML = `
-    <table>
-      <thead>
-        <tr>
-          <th>Lead</th><th>Status</th><th>Followup</th><th>Last Sent</th><th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+  area.innerHTML = `<table>
+    <thead><tr><th>Lead</th><th>Status</th><th>Followup</th><th>Last Sent</th><th>Actions</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
 }
 
-// ─── STATS ────────────────────────────────────────────
 function updateStats() {
-  const count = s => leads.filter(l => l.status === s).length;
+  const cnt = s => leads.filter(l => l.status === s).length;
   document.getElementById("s-total").textContent   = leads.length;
-  document.getElementById("s-pending").textContent = count("PENDING");
-  document.getElementById("s-done").textContent    = count("DONE");
-  document.getElementById("s-stop").textContent    = count("STOP");
+  document.getElementById("s-pending").textContent = cnt("PENDING");
+  document.getElementById("s-done").textContent    = cnt("DONE");
+  document.getElementById("s-stop").textContent    = cnt("STOP");
 }
 
-// ─── ACTIONS ──────────────────────────────────────────
-async function action(type, id) {
+async function doAction(type, id) {
   try {
-    await fetch(`${API}?action=${type}&id=${id}`);
-    toast(type === "delete" ? "Deleted" : `Marked as ${type.toUpperCase()}`, "ok");
+    const res = await fetch(`${API}?action=${type}&id=${id}&cb=${Date.now()}`);
+    await res.json();
+    toast(type==="delete" ? "Deleted ✅" : `Marked as ${type.toUpperCase()} ✅`, "ok");
     loadLeads();
-  } catch (e) {
-    toast("Action failed", "err");
-  }
+  } catch (err) { toast("Action failed: " + err.message, "err"); }
 }
 
-// ─── HELPERS ─────────────────────────────────────────
 function clearForm() {
   ["f-name","f-phone","f-email","f-message"].forEach(id => document.getElementById(id).value = "");
 }
-
-function esc(str) {
-  return String(str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function esc(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
-
-let toastTimer;
-function toast(msg, type = "ok") {
+let tt;
+function toast(msg, type="ok") {
   const el = document.getElementById("toast");
-  el.textContent = (type === "ok" ? "✅ " : "❌ ") + msg;
+  el.textContent = (type==="ok"?"✅ ":"❌ ") + msg;
   el.className = `show ${type}`;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.className = "", 3500);
+  clearTimeout(tt);
+  tt = setTimeout(() => { el.className = ""; }, 3500);
 }
 </script>
 </body>
